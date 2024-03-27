@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Decoder</title>
+    <script>
+        function decodeBase64() {
+            // 获取用户输入的Base64字符串
+            var encodedStr = document.getElementById('base64Input').value;
+
+            try {
+                // 进行Base64解码
+                var decodedStr = atob(encodedStr);
+
+                // 显示解码后的字符串
+                document.getElementById('result').innerText = decodedStr;
+            } catch (e) {
+                // 处理错误，如无效的Base64字符串
+                document.getElementById('result').innerText = '解码错误: ' + e.message;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Base64 解码器</h1>
+    <input type="text" id="base64Input" placeholder="输入Base64字符串">
+    <button onclick="decodeBase64()">解码</button>
+    <h2>解码结果：</h2>
+    <div id="result"></div>
+</body>
+</html>

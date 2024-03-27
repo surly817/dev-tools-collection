@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>年份生肖查询</title>
+</head>
+<body>
+  <label>请输入年份: <input type="text" id="yearInput"></label>
+  <button onclick="getZodiac()">查询生肖</button>
+  
+  <p id="result"></p>
+
+  <script>
+    function getZodiac() {
+      let year = document.getElementById("yearInput").value;
+      let zodiac;
+      switch (year % 12) {
+        case 0: zodiac = '猴'; break;
+        case 1: zodiac = '鸡'; break;  
+        case 2: zodiac = '狗'; break;
+        case 3: zodiac = '猪'; break;
+        case 4: zodiac = '鼠'; break;
+        case 5: zodiac = '牛'; break;
+        case 6: zodiac = '虎'; break;
+        case 7: zodiac = '兔'; break;
+        case 8: zodiac = '龙'; break;
+        case 9: zodiac = '蛇'; break;
+        case 10: zodiac = '马'; break;
+        case 11: zodiac = '羊'; break;
+      }
+      document.getElementById("result").innerText = year + "年的生肖是:" + zodiac;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">  
+<title>生肖年份查询</title>
+</head>
+
+<body>
+
+年份: <input type="text" id="yearInput">
+<button onclick="getZodiac()">查询生肖</button><br><br>  
+
+生肖:
+<select id="zodiacSelect">
+  <option value="鼠">鼠</option>
+  <option value="牛">牛</option>
+  <option value="虎">虎</option>
+  <option value="兔">兔</option>
+  <option value="龙">龙</option>
+  <option value="蛇">蛇</option>
+  <option value="马">马</option>
+  <option value="羊">羊</option>
+  <option value="猴">猴</option>
+  <option value="鸡">鸡</option>
+  <option value="狗">狗</option>
+  <option value="猪">猪</option>
+</select>
+
+<button onclick="getYears()">查询年份</button>
+
+<p id="result1"></p>
+<p id="result2"></p>
+
+<script>
+// 判断生肖的函数
+function getZodiac() {
+  let year = document.getElementById("yearInput").value;
+  let zodiac = getZodiacFromYear(year);
+  document.getElementById("result1").innerText = year + "年的生肖是:" + zodiac;
+}
+
+// 计算生肖年份的函数
+function getYears() {
+  let zodiac = document.getElementById("zodiacSelect").value;
+  let years = getZodiacYears(zodiac);
+
+  document.getElementById("result1").innerText = years[0];
+  document.getElementById("result2").innerText = years[1]; 
+}
+
+// 根据年份判断生肖
+function getZodiacFromYear(year) {
+
+      let zodiac;
+      switch (year % 12) {
+        case 0: zodiac = '猴'; break;
+        case 1: zodiac = '鸡'; break;  
+        case 2: zodiac = '狗'; break;
+        case 3: zodiac = '猪'; break;
+        case 4: zodiac = '鼠'; break;
+        case 5: zodiac = '牛'; break;
+        case 6: zodiac = '虎'; break;
+        case 7: zodiac = '兔'; break;
+        case 8: zodiac = '龙'; break;
+        case 9: zodiac = '蛇'; break;
+        case 10: zodiac = '马'; break;
+        case 11: zodiac = '羊'; break;
+      }
+      return zodiac;
+
+}
+
+// 存在异常--需先进行上一输入年份及属相获取-后进行属相相差年份计算再进行输出
+// 代码优化方向-输入框限制仅可输入四位数字 点击执行一项查询后先进行 屏幕清空-防止前一输出仍遗留在屏幕上
+// 根据生肖判断年份
+function getZodiacYears(zodiac) {
+
+  const zodiacs = ['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
+  
+  const zodiacIndex = zodiacs.indexOf(zodiac);
+  
+  const currentYear = new Date().getFullYear();
+  
+  const prevYear = currentYear - zodiacIndex - 1;
+  
+  const nextYear = prevYear + 12;
+  
+  return [prevYear, nextYear];
+
+}
+</script>
+
+</body>
+</html>
