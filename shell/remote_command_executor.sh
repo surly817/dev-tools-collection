@@ -2,16 +2,16 @@
 
 # 脚本名称: remote_command_executor.sh
 # 作者: Surly
-# 版本: 2.0
+# 版本: 2.2
 # 创建日期: 2024-04-11
-# 最后修改日期: 2024-04-12
+# 最后修改日期: 2024-04-16
 # 描述: 在多个主机上执行指定命令，并带有日志记录和错误处理功能
 # 脚本测试环境: Linux hadoop102 3.10.0-1160.83.1.el7.x86_64 #1 SMP Wed Jan 25 16:41:43 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux / CentOS Linux release 7.9.2009 (Core)
 
 # 基础环境配置
-LOG_FILE="$(basename "$0" .sh).log"
-CONFIG_FILE="remote_command_executor.conf"
-current_path=$(pwd)
+SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+LOG_FILE="$SCRIPT_DIR/$(basename "$0" .sh).log"
+CONFIG_FILE="$SCRIPT_DIR/remote_command_executor.conf"
 declare -a hosts
 declare input_command=""
 declare is_hosts_saved=false
@@ -33,7 +33,7 @@ print_message() {
   local level=$1
   local color=${COLORS[$2]}
   local message=$3
-  echo -e "${color}[$level] $message${COLORS['reset']}" | tee -a "$current_path/$LOG_FILE"
+  echo -e "${color}[$level] $message${COLORS['reset']}" | tee -a "$LOG_FILE"
 }
 
 # 错误处理
@@ -50,7 +50,7 @@ trap 'script_end' EXIT
 
 # 开始和结束日志
 script_start() {
-  echo "$SEPARATOR" >> "$current_path/$LOG_FILE"
+  echo "$SEPARATOR" >> "$LOG_FILE"
   time_stamp=$(get_formatted_timestamp)
   print_message INFO yellow "脚本开始执行于：$time_stamp"
 }
@@ -65,15 +65,15 @@ script_end() {
     local end_seconds=$(date -d "$end_script_time" +%s)
     local duration=$((end_seconds - start_seconds))
     print_message INFO green "脚本总执行时间：$duration 秒"
-    echo "$SEPARATOR" >> "$current_path/$LOG_FILE"  # 在执行结束后添加分隔符
+    echo "$SEPARATOR" >> "$LOG_FILE"  # 在执行结束后添加分隔符
   fi
 }
 
 # 初始化配置检查
 initialize() {
   is_hosts_saved=false
-  if [ -f "$current_path/$CONFIG_FILE" ]; then
-    source "$current_path/$CONFIG_FILE"
+  if [ -f "$CONFIG_FILE" ]; then
+    source "$CONFIG_FILE"
     if [ "$HOSTS_SAVED" == "true" ] && [ -n "$HOSTS" ]; then
       IFS=' ' read -r -a hosts <<< "$HOSTS"
       print_message INFO yellow "使用的主机配置: ${hosts[*]}"
@@ -104,8 +104,8 @@ input_hosts_and_command() {
   print_message INFO yellow "是否将这些主机配置保存为常用配置？(y/n): "
   read save_choice
   if [[ $save_choice =~ ^[Yy]$ ]]; then
-    echo "HOSTS_SAVED=true" > "$current_path/$CONFIG_FILE"
-    echo "HOSTS=\"$joined_hosts\"" >> "$current_path/$CONFIG_FILE"
+    echo "HOSTS_SAVED=true" > "$CONFIG_FILE"
+    echo "HOSTS=\"$joined_hosts\"" >> "$CONFIG_FILE"
     is_hosts_saved=true
   else
     is_hosts_saved=false
@@ -128,7 +128,7 @@ load_hosts() {
     # 直接使用用户输入的主机名
     return
   fi
-  source "$current_path/$CONFIG_FILE"
+  source "$CONFIG_FILE"
   print_message INFO yellow "正在从配置文件加载主机名..."
   if [ -n "${HOSTS:-}" ]; then
     IFS=' ' read -r -a hosts <<< "${HOSTS}"
